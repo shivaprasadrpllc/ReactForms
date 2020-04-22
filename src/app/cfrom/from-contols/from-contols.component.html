@@ -67,15 +67,6 @@
           <div class="row">
             <legend class="col-form-label col-2">SKills</legend>
             <div class="col-10">
-              <ng-container formArrayName="skills">
-                <div *ngFor="let item of actionFormgroup.get('skills').controls; let i = index">
-                  <div class="form-check" [formGroupName]="i">
-                    <ng-container *ngFor="let skill of skillSet">
-                      <input type="checkbox" name="" [formControlName]="skill.value" id=""> {{skill.name}}
-                    </ng-container>
-                  </div>
-                </div>
-              </ng-container>
             </div>
           </div>
         </div>
