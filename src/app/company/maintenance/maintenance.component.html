@@ -1,0 +1,337 @@
+<div class="container-fluid no-padding">
+  <div class="row no-gutters">
+    <div class="col-12">
+      <div class="header">
+        <span style="font-size: 16px;">Company Maintenace</span>
+      </div>
+    </div>
+    <div class="col-12">
+      <div class="row no-gutters">
+        <div class="grid">
+          <div class="col-12 no-padding actions">
+            <div class="d-flex action-div">
+              <div class="p-2">
+                <div class="cu-btn btn-selected">
+                  <i class="fa fa-bars" aria-hidden="true"></i>
+                  <span style="padding-left: 5px;">Menu</span>
+                </div>
+              </div>
+              <div class="ml-auto p-2">
+                <div class="cu-btn" *ngIf="showBtn === 'SC' || showBtn === 'SS'" (click)="changeBtnStatus('SA')">
+                  <i class="fa fa-times" aria-hidden="true"></i>
+                  <span style="padding-left: 5px;">Cancel</span>
+                </div>
+                <div class="cu-btn" [ngClass]="{'btn-selected': showBtn === 'SC'}" (click)="changeBtnStatus('SC')"
+                  *ngIf="showBtn === 'SA' || showBtn === 'SC'" style="margin-left: 5px;">
+                  <i class="fa fa-search" aria-hidden="true"></i>
+                  <span style="padding-left: 5px;">Search</span>
+                </div>
+                <div class="cu-btn btn-selected" [ngClass]="{'btn-selected': showBtn === 'SA'}" *ngIf="showBtn === 'SA'"
+                  (click)="changeBtnStatus('SS')" style="margin-left: 5px;">
+                  <i class="fa fa-plus" aria-hidden="true"></i>
+                  <span style="padding-left: 5px;">Add New</span>
+                </div>
+                <div class="cu-btn" [ngClass]="{'btn-selected': showBtn === 'SS'}" *ngIf="showBtn === 'SS'"
+                  (click)="changeBtnStatus('SA')" style="margin-left: 5px;">
+                  <i class="fa fa-floppy-o" aria-hidden="true"></i>
+                  <span style="padding-left: 5px;">Save</span>
+                </div>
+              </div>
+            </div>
+          </div>
+          <div class="col-12 no-padding">
+            <div class="gridDataDiv">
+              <table class="table table-sm">
+                <thead class="grid-head">
+                  <tr>
+                    <th style="width: 60px;">
+                      <label class="containerC" style="margin-bottom: 16px !important;">
+                        <input type="checkbox" [(ngModel)]="isChecked">
+                        <span class="checkmark"></span>
+                      </label></th>
+                    <th>Full Name</th>
+                    <th>Customer</th>
+                    <th>Customer ID</th>
+                    <th>Country</th>
+                    <th>Priority</th>
+                    <th>Carrier</th>
+                    <th>Regional Office</th>
+                    <th>POP</th>
+                    <th>Agency</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  <ng-container *ngFor="let info of maintanceInfo">
+                    <tr>
+                      <td>
+                        <label class="containerC" style="margin-top: 5px;">
+                          <input type="checkbox" (change)="changeType($event, info)"
+                            [checked]="info.selected || isChecked">
+                          <span class="checkmark"></span>
+                        </label>
+                      </td>
+                      <td>{{info.fullName}}</td>
+                      <td>{{getCustInfo(info.customer,'custName')}}</td>
+                      <td>{{getCustInfo(info.customer,'custId')}}</td>
+                      <td>{{getCountry(info.country)}}</td>
+                      <td>{{getPriority(info.priority)}}</td>
+                      <td>{{info.carrier}}</td>
+                      <td>{{info.regOffice}}</td>
+                      <td>{{info.POP}}</td>
+                      <td>{{info.Agency}}</td>
+                    </tr>
+                  </ng-container>
+                  <tr>
+                    <td colspan="10"></td>
+                  </tr>
+                </tbody>
+              </table>
+            </div>
+            <div class="gridCountInfo" *ngIf="maintanceInfo.length">
+              <div class="row no-gutters">
+                <div class="col-12">
+                  <div class="d-flex">
+                    <div class="ml-auto p-2">
+                      <span>
+                        Showing 1 to {{maintanceInfo.length}} of {{totallength}} entries
+                      </span>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+            <div class="oppDiv" *ngIf="showBtn === 'SS' || showBtn === 'SC'">
+              <form [formGroup]="actionMaintenanceInfo">
+                <div class="row no-gutters">
+                  <div class="col-12 add-header">
+                    <span>Company Details</span>
+                  </div>
+                  <div class="col-12 add-body">
+                    <div class="row no-gutters">
+
+                      <div class="col-9">
+                        <div class="row no-gutters">
+                          <div class="col-4 ac-div">
+                            <div>
+                              <label for="fName">Full Name</label>
+                              <input type="text" class="form-control cu-control" formControlName="fName" name="fName" id="fName">
+                            </div>
+                            <div>
+                              <label for="address">Address</label>
+                              <input type="text" class="form-control cu-control" formControlName="address" name="address" id="address">
+                            </div>
+                            <div style="position: relative;">
+                              <label for="city">City</label>
+                              <div style="display:flex;">
+                                <select style="width: 72%;" class="form-control cu-control" name="city"  formControlName="city"
+                                  id="city"></select>
+                                <div class="cu-btn btn-selected" style="margin-left: 5px;" (click)="openAddCity = true">
+                                  <i class="fa fa-plus" aria-hidden="true"></i>
+                                  <span style="padding-left: 5px;">Add</span>
+                                </div>
+                              </div>
+                              <div class="addCityDiv" *ngIf="showBtn ==='SS' && openAddCity">
+                                <div class="row no-gutters">
+                                  <div class="col-12 ac-div nac-div">
+                                    <div>
+                                      <label for="aCity">City</label>
+                                      <input type="text" class="form-control cu-control" name="aCity" id="aCity">
+                                    </div>
+                                  </div>
+                                  <div class="col-12 ac-div nac-div">
+                                    <div>
+                                      <label for="acityCode">Code</label>
+                                      <input type="text" class="form-control cu-control" name="acityCode"
+                                        id="acityCode">
+                                    </div>
+                                  </div>
+                                  <div class="col-12 ac-div nac-div">
+                                    <div>
+                                      <label for="astate">State</label>
+                                      <select class="form-control cu-control" name="astate" id="astate"></select>
+                                    </div>
+                                  </div>
+                                  <div class="col-12 ac-div nac-div">
+                                    <div>
+                                      <label for="aCountry">Country</label>
+                                      <select class="form-control cu-control" name="aCountry" id="aCountry"></select>
+                                    </div>
+                                  </div>
+                                  <div class="col-12 ac-div nac-div">
+                                    <div class="d-flex">
+                                      <div class="ml-auto p-2">
+                                        <div class="cu-btn" (click)="openAddCity = false">
+                                          <i class="fa fa-times-circle-o" aria-hidden="true"></i>
+                                          <span style="padding-left: 5px;">Cancel</span>
+                                        </div>
+                                        <div class="cu-btn btn-selected" (click)="openAddCity = false"
+                                          style="margin-left: 5px;">
+                                          <i class="fa fa-check-circle-o" aria-hidden="true"></i>
+                                          <span style="padding-left: 5px;">Save</span>
+                                        </div>
+                                      </div>
+                                    </div>
+                                  </div>
+                                </div>
+                              </div>
+                            </div>
+                            <div>
+                              <label for="state">State/Province</label>
+                              <input type="text" class="form-control cu-control"  formControlName="state" name="state" id="state">
+                            </div>
+                          </div>
+                          <div class="col-4 ac-div">
+                            <div>
+                              <label for="country">Country</label>
+                              <select class="form-control cu-control" formControlName="country" name="country" id="country"></select>
+                            </div>
+                            <div>
+                              <label for="region">Region</label>
+                              <select class="form-control cu-control" name="region" id="region"></select>
+                            </div>
+                            <div style="position: relative;">
+                              <label for="bCode">Building Code</label>
+                              <input type="text" class="form-control cu-control" name="bCode" id="bCode">
+                              <i class="fa fa-ellipsis-h cu-dots" aria-hidden="true"></i>
+                            </div>
+                            <div>
+                              <label for="priority">Priority</label>
+                              <input type="text" class="form-control cu-control" name="priority" id="priority">
+                            </div>
+                          </div>
+                          <div class="col-4 ac-div">
+                            <div>
+                              <label for="cnxvid">CNXVID No</label>
+                              <input type="text" class="form-control cu-control" name="cnxvid" id="cnxvid">
+                            </div>
+                            <div>
+                              <label for="osref">Oracle Site Reference</label>
+                              <input type="text" class="form-control cu-control" name="osref" id="osref">
+                            </div>
+                            <div style="position: relative;">
+                              <label for="cust">Customer</label>
+                              <input type="text" class="form-control cu-control" name="cust" id="cust">
+                              <i class="fa fa-ellipsis-h cu-dots" aria-hidden="true"></i>
+                            </div>
+                            <div>
+                              <label for="custId">Customer ID/ Company Id</label>
+                              <input type="text" class="form-control cu-control" name="custId" id="custId">
+                            </div>
+                          </div>
+                          <div class="col-12 ac-div">
+                            <div>
+                              <div style="display: inline-flex;">
+                                <div>
+                                  <label class="containerC" style="margin-top: 5px;">
+                                    <input type="checkbox" checked>
+                                    <span class="checkmark"></span>
+                                  </label>
+                                </div>
+                                <div>
+                                  <p>This is Service Only</p>
+                                </div>
+                              </div>
+                              <div style="display: inline-flex;margin-left: 40px;">
+                                <div>
+                                  <label class="containerC" style="margin-top: 5px;">
+                                    <input type="checkbox" checked>
+                                    <span class="checkmark"></span>
+                                  </label>
+                                </div>
+                                <div>
+                                  <p>All</p>
+                                </div>
+                              </div>
+                              <div style="display: inline-flex;margin-left: 40px;">
+                                <div>
+                                  <label class="containerC" style="margin-top: 5px;">
+                                    <input type="checkbox" checked>
+                                    <span class="checkmark"></span>
+                                  </label>
+                                </div>
+                                <div>
+                                  <p>With Deleted Contacts in R8</p>
+                                </div>
+                              </div>
+                            </div>
+
+                          </div>
+                        </div>
+                      </div>
+                      <div class="col-3">
+                        <div>
+                          <table>
+                            <tbody class="opInfoTbody">
+                              <tr>
+                                <td style="width: 180px;"></td>
+                                <td>Yes</td>
+                                <td>No</td>
+                                <td>Igonre</td>
+                              </tr>
+                              <ng-container *ngFor="let cdOption of companyDetailOptions">
+                                <tr>
+                                  <td style="padding: 0px 10px;">{{cdOption.name}}</td>
+                                  <td>
+                                    <label class="containerR" style="margin-top: 5px;">
+                                      <input type="radio" name="{{cdOption.name}}" checked>
+                                      <span class="checkmarkR"></span>
+                                    </label>
+                                  </td>
+                                  <td>
+                                    <label class="containerR" style="margin-top: 5px;">
+                                      <input type="radio" name="{{cdOption.name}}" checked>
+                                      <span class="checkmarkR"></span>
+                                    </label>
+                                  </td>
+                                  <td>
+                                    <label class="containerR" style="margin-top: 5px;">
+                                      <input type="radio" name="{{cdOption.name}}" checked>
+                                      <span class="checkmarkR"></span>
+                                    </label>
+                                  </td>
+                                </tr>
+                              </ng-container>
+                            </tbody>
+                          </table>
+                        </div>
+                      </div>
+
+                    </div>
+                  </div>
+                </div>
+                <div class="row no-gutters" style="margin-top: 20px;">
+                  <div class="col-12 add-header">
+                    <span>Contact Criteria</span>
+                  </div>
+                  <div class="col-12 add-body">
+                    <div class="row no-gutters">
+                      <div class="col-4 ac-div">
+                        <div>
+                          <label for="fullName">Full Name</label>
+                          <input type="text" class="form-control cu-control" name="fullName" id="fullName">
+                        </div>
+                      </div>
+                      <div class="col-4 ac-div">
+                        <div>
+
+                          <label for="lastName">Last Name</label>
+                          <input type="text" class="form-control cu-control" name="lastName" id="lastName">
+                        </div>
+                      </div>
+                      <div class="col-4 ac-div">
+                        <div>
+                          <label for="Email">Email</label>
+                          <input type="text" class="form-control cu-control" name="Email" id="Email">
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              </form>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
